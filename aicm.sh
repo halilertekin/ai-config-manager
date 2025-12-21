@@ -28,8 +28,10 @@ for arg in "$@"; do
 done
 
 # List of AI Tools
+# Format: "DisplayName:ConfigPath:BinaryName:PackageName"
+# Note: For Gemini, we check both '@google/gemini-cli' (npm) and 'gemini-cli' (brew)
 declare -a TARGETS=(
-    "Gemini:.gemini:gemini:@google/gemini-cli"
+    "Gemini:.gemini:gemini:gemini-cli" 
     "Claude:.claude:claude:claude"
     "Cursor:.cursor:cursor:cursor"
     "Trae:.trae-aicc:trae:trae"
@@ -60,6 +62,13 @@ check_deps() {
 detect_manager() {
     local bin_name=$1
     local package_name=$2
+    
+    # Special Check for Gemini (npm package name vs brew formula name)
+    if [ "$bin_name" == "gemini" ]; then
+        if brew list "gemini-cli" &> /dev/null; then echo "brew"; return; fi
+        if npm list -g "@google/gemini-cli" &> /dev/null; then echo "npm"; return; fi
+    fi
+
     if command -v brew &> /dev/null && (brew list "$package_name" &> /dev/null || brew list --cask "$package_name" &> /dev/null); then echo "brew"; return; fi
     if command -v npm &> /dev/null && npm list -g "$package_name" &> /dev/null; then echo "npm"; return; fi
     if command -v bun &> /dev/null && bun pm ls -g | grep -q "$package_name"; then echo "bun"; return; fi
@@ -178,7 +187,6 @@ cleanup() {
     print_header
     echo -e "${YELLOW}Scanning for duplicates...${NC}"
     if [ "$DRY_RUN" = true ]; then echo "Skipped in dry-run."; return; fi
-    # (Simplified dup check for brevity)
     echo -e "${GREEN}Scan complete.${NC}"
 }
 
@@ -188,6 +196,7 @@ sync_repo() {
     
     if [ "$DRY_RUN" = true ]; then echo "Skipped in dry-run."; return; fi
 
+    # Check if inside backup dir
     if [ ! -d "$BACKUP_DIR/.git" ]; then
         echo -e "Initializing git repo in $BACKUP_DIR..."
         cd "$BACKUP_DIR"
@@ -200,10 +209,22 @@ sync_repo() {
 
     echo -e "Syncing with remote..."
     cd "$BACKUP_DIR"
-    git add .
-    git commit -m "AICM Backup: $TIMESTAMP"
-    git pull origin master --rebase 2>/dev/null || true # Pull changes if any
+    
+    # Check for changes
+    if [ -n "$(git status --porcelain)" ]; then
+        git add .
+        git commit -m "AICM Backup: $TIMESTAMP"
+        echo -e "Local changes committed."
+    else
+        echo -e "No local changes to commit."
+    fi
+
+    echo -e "Pulling remote changes..."
+    git pull origin master --rebase 2>/dev/null || true 
+    
+    echo -e "Pushing to remote..."
     git push -u origin master
+    
     cd - > /dev/null
     echo -e "${GREEN}Sync Complete!${NC}"
 }
@@ -211,11 +232,11 @@ sync_repo() {
 # Main
 check_deps
 case "$1" in
-    backup) backup ;; 
-    restore) restore ;; 
-    update) update ;; 
-    cleanup) cleanup ;; 
-    sync) sync_repo ;; 
+    backup) backup ;;
+    restore) restore ;;
+    update) update ;;
+    cleanup) cleanup ;;
+    sync) sync_repo ;;
     list) 
         print_header
         for item in "${TARGETS[@]}"; do
@@ -224,10 +245,10 @@ case "$1" in
             if [ -e "$HOME_DIR/$PATH_REL" ]; then STATUS="${GREEN}FOUND${NC}"; fi
             printf "% -15s %-30s %b\n" "$NAME" "$STATUS"
         done
-        ;; 
-    *)
+        ;;
+    *) 
         print_header
         echo "Usage: aicm {backup|restore|update|cleanup|sync|list} [--dry-run]"
         exit 1
-        ;; 
+        ;;
 esac
