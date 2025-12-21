@@ -1,5 +1,7 @@
 # AI Config Manager (AICM)
 
+![AICM Ultimate AI Command Center](assets/aicm.png)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![npm version](https://img.shields.io/npm/v/@halilertekin/ai-config-manager.svg)](https://www.npmjs.com/package/@halilertekin/ai-config-manager)
 
@@ -7,10 +9,11 @@
 
 ## 🚀 Features
 
-*   **🛡️ Secure Backup:** Backups configs locally, stripping out sensitive tokens.
+*   **🛡️ Secure Backup:** Backups configs locally, stripping out sensitive tokens (OAuth, API keys).
 *   **☁️ Cloud Sync:** Optional sync to your own **private** Git repository.
 *   **🧠 Smart Restore:** Automatically installs missing tools (`npm`, `brew`, etc.) on new machines.
 *   **🔄 Universal Update:** Updates all tools with one command.
+*   **🧹 Duplicate Cleanup:** Detects and resolves conflicting installations.
 
 ## 📦 Installation
 
@@ -61,5 +64,15 @@ npm install -g @halilertekin/ai-config-manager
 > **Your Data, Your Responsibility.**
 > AICM attempts to exclude sensitive files (`oauth_creds.json`, etc.) from backups. However, **YOU** are responsible for ensuring no secrets are committed if you use the `sync` feature. **ALWAYS use a PRIVATE repository.**
 
-## License
-MIT
+## 🤝 Contributing
+
+Contributions are welcome!
+1.  Fork the Project
+2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4.  Push to the Branch (`git push origin feature/AmazingFeature`)
+5.  Open a Pull Request
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
