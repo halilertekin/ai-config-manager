@@ -1,6 +1,6 @@
 {
   "name": "@halilertekin/ai-config-manager",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "CLI tool to backup, restore, update, and manage configurations for AI coding assistants (Gemini, Claude, Cursor, Copilot, etc.)",
   "main": "aicm.sh",
   "bin": {
