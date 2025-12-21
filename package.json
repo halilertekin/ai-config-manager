@@ -1,0 +1,40 @@
+{
+  "name": "@halilertekin/ai-config-manager",
+  "version": "1.0.1",
+  "description": "CLI tool to backup, restore, update, and manage configurations for AI coding assistants (Gemini, Claude, Cursor, Copilot, etc.)",
+  "main": "aicm.sh",
+  "bin": {
+    "aicm": "./aicm.sh"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/halilertekin/ai-config-manager.git"
+  },
+  "keywords": [
+    "ai",
+    "backup",
+    "restore",
+    "dotfiles",
+    "gemini",
+    "claude",
+    "cursor",
+    "copilot",
+    "configuration-manager"
+  ],
+  "author": "Halil Ertekin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/halilertekin/ai-config-manager/issues"
+  },
+  "homepage": "https://github.com/halilertekin/ai-config-manager#readme",
+  "os": [
+    "darwin",
+    "linux"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

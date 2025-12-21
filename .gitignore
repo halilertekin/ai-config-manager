@@ -1,0 +1,29 @@
+# Ignore system files
+.DS_Store
+.idea/
+.vscode/
+
+# Ignore ALL backups
+# We do not want users' personal configs to be part of the tool's source code repo
+backups/
+
+# Ignore backups of secrets (Double safety layer)
+# Even if the script excludes them, we don't want to accidentally commit them
+# if the user manually copies files.
+
+# Auth & Credentials
+**/oauth_creds.json
+**/google_accounts.json
+**/auth.json
+**/secrets.json
+**/credentials
+**/itunes_service_key.txt
+**/*.pem
+**/*.key
+**/.env
+
+# Temporary & Cache
+**/tmp/
+**/cache/
+**/logs/
+**/*.log
