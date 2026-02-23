@@ -3,6 +3,12 @@
 .idea/
 .vscode/
 
+# Build outputs
+dist/
+node_modules/
+pnpm-lock.yaml
+*.tsbuildinfo
+
 # Ignore ALL backups
 # We do not want users' personal configs to be part of the tool's source code repo
 backups/
@@ -27,3 +33,8 @@ backups/
 **/cache/
 **/logs/
 **/*.log
+
+# Build output
+node_modules/
+dist/
+pnpm-lock.yaml
