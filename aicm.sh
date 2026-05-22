@@ -78,6 +78,31 @@ detect_manager() {
     echo "manual"
 }
 
+get_all_installed_managers() {
+    local bin_name=$1
+    local package_name=$2
+    local managers_list=""
+
+    # Special Check for Gemini (npm package name vs brew formula name)
+    if [ "$bin_name" == "gemini" ]; then
+        if brew list "gemini-cli" &> /dev/null; then managers_list+="brew\n"; fi
+        if npm list -g "@google/gemini-cli" &> /dev/null; then managers_list+="npm\n"; fi
+    fi
+
+    # General checks for other managers
+    # Only check if the binary is present before checking package managers, for more accurate detection
+    if command -v "$bin_name" &> /dev/null; then
+        if command -v brew &> /dev/null && (brew list "$package_name" &> /dev/null || brew list --cask "$package_name" &> /dev/null); then managers_list+="brew\n"; fi
+        if command -v npm &> /dev/null && npm list -g "$package_name" &> /dev/null; then managers_list+="npm\n"; fi
+        if command -v bun &> /dev/null && bun pm ls -g | grep -q "$package_name"; then managers_list+="bun\n"; fi
+        if command -v yarn &> /dev/null && yarn global list 2>/dev/null | grep -q "$package_name"; then managers_list+="yarn\n"; fi
+        if command -v pnpm &> /dev/null && pnpm list -g | grep -q "$package_name"; then managers_list+="pnpm\n"; fi
+    fi
+
+    # Remove duplicates and print
+    echo -e "$managers_list" | sed '/^\s*$/d' | sort -u
+}
+
 execute_rsync() {
     local src=$1
     local dest=$2
@@ -186,8 +211,41 @@ update() {
 
 cleanup() {
     print_header
-    echo -e "${YELLOW}Scanning for duplicates...${NC}"
+    echo -e "${YELLOW}Scanning for duplicate tool installations...${NC}"
     if [ "$DRY_RUN" = true ]; then echo "Skipped in dry-run."; return; fi
+
+    local conflicts_found=false
+
+    for item in "${TARGETS[@]}"; do
+        IFS=":" read -r NAME PATH_REL BIN PACKAGE <<< "$item"
+        
+        # Get all managers that installed this tool
+        installed_managers=$(get_all_installed_managers "$BIN" "$PACKAGE")
+        
+        # Count unique managers
+        num_managers=$(echo "$installed_managers" | wc -l)
+        num_managers=$(($num_managers+0)) # Convert to integer
+
+        if [ "$num_managers" -gt 1 ]; then
+            conflicts_found=true
+            echo -e "${RED}Conflict detected for ${NAME} (binary: ${BIN}):${NC}"
+            echo -e "  Installed by:"
+            echo "$installed_managers" | while read manager; do
+                echo -e "    - ${manager}"
+            done
+            echo ""
+        elif [ "$num_managers" -eq 1 ]; then
+            echo -e "${GREEN}${NAME} (binary: ${BIN}): Installed via $(echo "$installed_managers" | head -n 1)${NC}"
+        else
+            echo -e "${YELLOW}${NAME} (binary: ${BIN}): Not detected by any known package manager (or not installed).${NC}"
+        fi
+    done
+
+    if [ "$conflicts_found" = false ]; then
+        echo -e "${GREEN}No duplicate tool installations found.${NC}"
+    else
+        echo -e "${YELLOW}Review detected conflicts and uninstall duplicates manually to avoid unexpected behavior.${NC}"
+    fi
     echo -e "${GREEN}Scan complete.${NC}"
 }
 
