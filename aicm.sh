@@ -39,13 +39,14 @@ declare -a TARGETS=(
     "Codex:.codex:codex:codex"
     "SuperMaven:.supermaven:supermaven:supermaven"
     "Copilot:.config/github-copilot:gh:gh"
+    "Hermes:.hermes:hermes:hermes"
 )
 
 # Files to exclude
 EXCLUDES=(
     "tmp" "cache" "Cache" "logs" "*.log" "node_modules" ".DS_Store"
     "oauth_creds.json" "google_accounts.json" "itunes_service_key.txt"
-    "auth.json" "session.json" "creds.json"
+    "auth.json" "session.json" "creds.json" ".env" "*.yaml" "*.yml"
 )
 
 print_header() {
