@@ -278,11 +278,12 @@ sync_repo() {
         echo -e "No local changes to commit."
     fi
 
-    echo -e "Pulling remote changes..."
-    git pull origin master --rebase 2>/dev/null || true 
+    CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+    echo -e "Pulling remote changes on branch $CURRENT_BRANCH..."
+    git pull origin "$CURRENT_BRANCH" --rebase 2>/dev/null || true 
     
-    echo -e "Pushing to remote..."
-    git push -u origin master
+    echo -e "Pushing to remote on branch $CURRENT_BRANCH..."
+    git push -u origin "$CURRENT_BRANCH"
     
     cd - > /dev/null
     echo -e "${GREEN}Sync Complete!${NC}"
@@ -296,6 +297,11 @@ case "$1" in
     update) update ;;
     cleanup) cleanup ;;
     sync) sync_repo ;;
+    version)
+        print_header
+        VERSION=$(node -p "require('./package.json').version")
+        echo -e "${GREEN}AICM Version: $VERSION${NC}"
+        ;;
     list) 
         print_header
         for item in "${TARGETS[@]}"; do
