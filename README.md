@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![npm version](https://img.shields.io/npm/v/@halilertekin/ai-config-manager.svg)](https://www.npmjs.com/package/@halilertekin/ai-config-manager)
 
-**AICM** is the ultimate command center for your AI development environment. It manages backups, restores, updates, and synchronization for tools like Gemini, Claude, Cursor, Trae, GitHub Copilot, and more.
+**AICM** is the ultimate command center for your AI development environment. It manages backups, restores, updates, and synchronization for tools like Gemini, Claude, Cursor, Trae, GitHub Copilot, Hermes, and more.
 
 ## 🚀 Features
 
@@ -53,11 +53,12 @@ npm install -g @halilertekin/ai-config-manager
 | Command | Description |
 | :--- | :--- |
 | `aicm list` | Detect installed tools. |
+| `aicm version` | Displays the current version of AICM. |
 | `aicm backup` | Backup configs to local `./backups` folder. |
 | `aicm restore` | Restore configs & install missing tools. |
 | `aicm sync` | **(NEW)** Sync `backups/` to a private Git repo. |
 | `aicm update` | Update all AI tools (`brew`/`npm`). |
-| `aicm cleanup` | Find and fix duplicate installations. |
+| `aicm cleanup` | Detects and offers to resolve conflicting or duplicate configurations. |
 
 ## ⚠️ Security Disclaimer
 
